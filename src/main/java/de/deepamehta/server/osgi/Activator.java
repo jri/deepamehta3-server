@@ -92,7 +92,7 @@ public class Activator implements BundleActivator {
 
             @Override
             public Object addingService(ServiceReference serviceRef) {
-                logger.info("HTTP service becomes available");
+                logger.info("Adding HTTP service");
                 httpService = (HttpService) super.addingService(serviceRef);
                 registerServlet();
                 return httpService;
@@ -101,7 +101,7 @@ public class Activator implements BundleActivator {
             @Override
             public void removedService(ServiceReference ref, Object service) {
                 if (service == httpService) {
-                    logger.info("HTTP service goes away");
+                    logger.info("Removing HTTP service");
                     unregisterServlet();
                     httpService = null;
                 }

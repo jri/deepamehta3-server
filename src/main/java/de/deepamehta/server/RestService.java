@@ -2,6 +2,7 @@ package de.deepamehta.server;
 
 import de.deepamehta.server.resources.TopicResource;
 import de.deepamehta.server.resources.RelationResource;
+import de.deepamehta.server.resources.PluginResource;
 
 import javax.ws.rs.core.Application;
 
@@ -20,6 +21,7 @@ public class RestService extends Application {
         Set s = new HashSet();
         s.add(TopicResource.class);
         s.add(RelationResource.class);
+        s.add(PluginResource.class);
         return s;
     }    
 }
