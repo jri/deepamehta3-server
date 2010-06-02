@@ -31,10 +31,13 @@ import java.util.logging.Logger;
 
 public class Activator implements BundleActivator {
 
-    private static ServiceTracker deepamehtaServiceTracker;
-    private ServiceTracker httpServiceTracker;
+    private String bundleName;
 
-    private HttpService httpService = null;
+    private ServiceTracker deepamehtaServiceTracker;
+    private static DeepaMehtaService dms;
+
+    private ServiceTracker httpServiceTracker;
+    private HttpService httpService;
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
@@ -47,17 +50,18 @@ public class Activator implements BundleActivator {
 
 
     public void start(BundleContext context) {
-        logger.info("Starting DeepaMehta Server bundle");
-        //
-        httpServiceTracker = createHttpServiceTracker(context);
-        httpServiceTracker.open();
+        bundleName = (String) context.getBundle().getHeaders().get("Bundle-Name");
+        logger.info("----- Starting bundle \"" + bundleName + "\" -----");
         //
         deepamehtaServiceTracker = createDeepamehtaServiceTracker(context);
         deepamehtaServiceTracker.open();
+        //
+        httpServiceTracker = createHttpServiceTracker(context);
+        httpServiceTracker.open();
     }
 
     public void stop(BundleContext context) {
-        logger.info("Stopping DeepaMehta Server bundle");
+        logger.info("----- Stopping bundle \"" + bundleName + "\" -----");
         //
         httpServiceTracker.close();
         deepamehtaServiceTracker.close();
@@ -72,11 +76,11 @@ public class Activator implements BundleActivator {
 
 
     public static DeepaMehtaService getService() {
-        DeepaMehtaService service = (DeepaMehtaService) deepamehtaServiceTracker.getService();
-        if (service == null) {
-            throw new RuntimeException("DeepaMehta service is currently not available");
+        // DeepaMehtaService dms = (DeepaMehtaService) deepamehtaServiceTracker.getService();
+        if (dms == null) {
+            throw new RuntimeException("DeepaMehta core service is currently not available");
         }
-        return service;
+        return dms;
     }
 
 
@@ -87,12 +91,37 @@ public class Activator implements BundleActivator {
 
 
 
+    /* private ServiceTracker createDeepamehtaServiceTracker(BundleContext context) {
+        return new ServiceTracker(context, DeepaMehtaService.class.getName(), null);
+    } */
+
+    private ServiceTracker createDeepamehtaServiceTracker(BundleContext context) {
+        return new ServiceTracker(context, DeepaMehtaService.class.getName(), null) {
+
+            @Override
+            public Object addingService(ServiceReference serviceRef) {
+                logger.info("Adding DeepaMehta core service to bundle \"" + bundleName + "\"");
+                dms = (DeepaMehtaService) super.addingService(serviceRef);
+                return dms;
+            }
+
+            @Override
+            public void removedService(ServiceReference ref, Object service) {
+                if (service == dms) {
+                    logger.info("Removing DeepaMehta core service from bundle \"" + bundleName + "\"");
+                    dms = null;
+                }
+                super.removedService(ref, service);
+            }
+        };
+    }
+
     private ServiceTracker createHttpServiceTracker(BundleContext context) {
         return new ServiceTracker(context, HttpService.class.getName(), null) {
 
             @Override
             public Object addingService(ServiceReference serviceRef) {
-                logger.info("Adding HTTP service");
+                logger.info("Adding HTTP service to bundle \"" + bundleName + "\"");
                 httpService = (HttpService) super.addingService(serviceRef);
                 registerServlet();
                 return httpService;
@@ -101,7 +130,7 @@ public class Activator implements BundleActivator {
             @Override
             public void removedService(ServiceReference ref, Object service) {
                 if (service == httpService) {
-                    logger.info("Removing HTTP service");
+                    logger.info("Removing HTTP service from bundle \"" + bundleName + "\"");
                     unregisterServlet();
                     httpService = null;
                 }
@@ -110,21 +139,16 @@ public class Activator implements BundleActivator {
         };
     }
 
-    private ServiceTracker createDeepamehtaServiceTracker(BundleContext context) {
-        return new ServiceTracker(context, DeepaMehtaService.class.getName(), null);
-    }
-
     // ---
 
     private void registerServlet() {
         try {
             Dictionary initParams = new Hashtable();
-            // initParams.put("com.sun.jersey.config.property.packages", "de.deepamehta.service.rest.resources");
+            // initParams.put("com.sun.jersey.config.property.packages", "de.deepamehta.server.resources");
             initParams.put("javax.ws.rs.Application", "de.deepamehta.server.RestService");
         	//
             logger.info("Registering REST resources");
             httpService.registerServlet("/rest", new ServletContainer(), initParams, null);
-            logger.info("REST recources registered!");
         } catch (Throwable ie) {
             throw new RuntimeException(ie);
         }

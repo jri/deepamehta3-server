@@ -17,30 +17,36 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 
 
-@Path("/plugin")
-@Produces("application/json")
-public class PluginResource {
+@Path("/topictype")
+public class TopicTypeResource {
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
     @GET
-    public JSONArray listPlugins() throws JSONException {
-        JSONArray plugins = new JSONArray();
-        for (String pluginId : Activator.getService().getPluginIds()) {
-            JSONObject plugin = new JSONObject();
-            plugin.put("plugin_id", pluginId);
-            plugin.put("plugin_file", Activator.getService().getPlugin(pluginId).getClientPlugin());
-            plugins.put(plugin);
+    public JSONArray getTopicTypeIds() throws JSONException {
+        JSONArray typeIds = new JSONArray();
+        for (String tpyeId : Activator.getService().getTopicTypeIds()) {
+            typeIds.put(tpyeId);
         }
-        return plugins;
+        return typeIds;
+    }
+
+    @GET
+    @Path("/{id}")
+    public JSONObject getTopic(@PathParam("id") String id) throws JSONException {
+        return Activator.getService().getTopicType(id).toJSON();
     }
 }
