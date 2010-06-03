@@ -58,10 +58,7 @@ public class TopicResource {
     public JSONObject createTopic(JSONObject topic) throws JSONException {
         String type = topic.getString("type_id");
         Map properties = JSONHelper.toMap(topic.getJSONObject("properties"));
-        Topic t = Activator.getService().createTopic(type, properties);
-        JSONObject response = new JSONObject();
-        response.put("topic_id", t.id);
-        return response;
+        return Activator.getService().createTopic(type, properties).toJSON();
     }
 
     @PUT
