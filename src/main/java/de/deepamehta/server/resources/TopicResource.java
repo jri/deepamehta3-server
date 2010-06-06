@@ -8,6 +8,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.POST;
@@ -27,8 +28,6 @@ import java.util.logging.Logger;
 
 
 @Path("/topic")
-// @Consumes("application/json")
-// @Produces("application/json")
 public class TopicResource {
 
     private Logger logger = Logger.getLogger(getClass().getName());
@@ -49,9 +48,11 @@ public class TopicResource {
     }
 
     @GET
-    public JSONObject searchTopics(@QueryParam("search") String searchTerm) throws JSONException {
-        logger.info("searchTerm=" + searchTerm);
-        return Activator.getService().searchTopics(searchTerm).toJSON();
+    public JSONObject searchTopics(@QueryParam("search") String searchTerm,
+                                   @QueryParam("field")  String fieldName,
+                                   @QueryParam("wholeword") boolean wholeWord) throws JSONException {
+        logger.info("searchTerm=" + searchTerm + ", fieldName=" + fieldName + ", wholeWord=" + wholeWord);
+        return Activator.getService().searchTopics(searchTerm, fieldName, wholeWord).toJSON();
     }
 
     @POST
