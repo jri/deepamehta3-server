@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 
 
 @Path("/relation")
-// @Consumes("application/json")
-// @Produces("application/json")
+@Consumes("application/json")
+@Produces("application/json")
 public class RelationResource {
 
     private Logger logger = Logger.getLogger(getClass().getName());

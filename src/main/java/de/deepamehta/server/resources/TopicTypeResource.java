@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 
 
 @Path("/topictype")
+@Consumes("application/json")
+@Produces("application/json")
 public class TopicTypeResource {
 
     private Logger logger = Logger.getLogger(getClass().getName());

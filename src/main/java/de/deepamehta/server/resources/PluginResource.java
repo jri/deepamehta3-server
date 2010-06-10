@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 
 @Path("/plugin")
+@Consumes("application/json")
 @Produces("application/json")
 public class PluginResource {
 

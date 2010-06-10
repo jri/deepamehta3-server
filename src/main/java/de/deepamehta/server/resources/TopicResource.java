@@ -16,8 +16,11 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Cookie;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,6 +31,8 @@ import java.util.logging.Logger;
 
 
 @Path("/topic")
+@Consumes("application/json")
+@Produces("application/json")
 public class TopicResource {
 
     private Logger logger = Logger.getLogger(getClass().getName());
@@ -40,11 +45,20 @@ public class TopicResource {
 
     @GET
     @Path("/{id}/related_topics")
-    public JSONArray getRelatedTopics(@PathParam("id") long id, @QueryParam("exclude") List excludeRelTypes)
-                                                                                        throws JSONException {
-        logger.info("id=" + id + " exclude=" + excludeRelTypes.toString() +
-            " (" + excludeRelTypes.size() + " items)");
-        return listToJson(Activator.getService().getRelatedTopics(id, excludeRelTypes));
+    public JSONArray getRelatedTopics(@PathParam("id") long id,
+                                      @QueryParam("include_topic_types") List includeTopicTypes,
+                                      @QueryParam("exclude_rel_types") List excludeRelTypes) throws JSONException {
+        logger.info("id=" + id +
+            ", includeTopicTypes=" + includeTopicTypes + " (" + includeTopicTypes.size() + " include items)" +
+            ", excludeRelTypes=" + excludeRelTypes + " (" + excludeRelTypes.size() + " exclude items)");
+        return listToJson(Activator.getService().getRelatedTopics(id, includeTopicTypes, excludeRelTypes));
+    }
+
+    @GET
+    @Path("/by_type/{typeId}")
+    public JSONArray getTopics(@PathParam("typeId") String typeId) throws JSONException {
+        logger.info("typeId=" + typeId);
+        return listToJson(Activator.getService().getTopics(typeId));
     }
 
     @GET
@@ -56,10 +70,13 @@ public class TopicResource {
     }
 
     @POST
-    public JSONObject createTopic(JSONObject topic) throws JSONException {
-        String type = topic.getString("type_id");
+    public JSONObject createTopic(JSONObject topic, @HeaderParam("Cookie") String cookie) throws JSONException {
+        String typeId = topic.getString("type_id");
         Map properties = JSONHelper.toMap(topic.getJSONObject("properties"));
-        return Activator.getService().createTopic(type, properties).toJSON();
+        Map clientContext = cookieToMap(cookie);
+        logger.info("### cookie: " + clientContext);
+        //
+        return Activator.getService().createTopic(typeId, properties, clientContext).toJSON();
     }
 
     @PUT
@@ -74,7 +91,13 @@ public class TopicResource {
         Activator.getService().deleteTopic(id);
     }
 
+
+
+    // ***********************
     // *** Private Helpers ***
+    // ***********************
+
+
 
     private JSONArray listToJson(List<Topic> topics) throws JSONException {
         JSONArray array = new JSONArray();
@@ -82,5 +105,20 @@ public class TopicResource {
             array.put(topic.toJSON());
         }
         return array;
+    }
+
+    /**
+      * Converts a "Cookie" header value (String) to a map (key=String, value=String).
+      * E.g. "user=jri; workspace_id=123" => {"user"="jri", "workspace_id"="123"}
+      */
+    private Map<String, String> cookieToMap(String cookie) {
+        Map cookieValues = new HashMap();
+        if (cookie != null) {
+            for (String value : cookie.split("; ")) {
+                String[] val = value.split("=");
+                cookieValues.put(val[0], val[1]);
+            }
+        }
+        return cookieValues;
     }
 }

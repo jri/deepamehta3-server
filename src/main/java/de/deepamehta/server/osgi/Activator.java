@@ -51,7 +51,7 @@ public class Activator implements BundleActivator {
 
     public void start(BundleContext context) {
         bundleName = (String) context.getBundle().getHeaders().get("Bundle-Name");
-        logger.info("----- Starting bundle \"" + bundleName + "\" -----");
+        logger.info("---------- Starting bundle \"" + bundleName + "\" ----------");
         //
         deepamehtaServiceTracker = createDeepamehtaServiceTracker(context);
         deepamehtaServiceTracker.open();
@@ -61,7 +61,7 @@ public class Activator implements BundleActivator {
     }
 
     public void stop(BundleContext context) {
-        logger.info("----- Stopping bundle \"" + bundleName + "\" -----");
+        logger.info("---------- Stopping bundle \"" + bundleName + "\" ----------");
         //
         httpServiceTracker.close();
         deepamehtaServiceTracker.close();
