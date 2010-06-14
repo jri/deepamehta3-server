@@ -48,7 +48,7 @@ public class TopicTypeResource {
 
     @GET
     @Path("/{id}")
-    public JSONObject getTopic(@PathParam("id") String id) throws JSONException {
+    public JSONObject getTopicType(@PathParam("id") String id) throws JSONException {
         return Activator.getService().getTopicType(id).toJSON();
     }
 }

@@ -64,9 +64,12 @@ public class TopicResource {
     @GET
     public JSONObject searchTopics(@QueryParam("search") String searchTerm,
                                    @QueryParam("field")  String fieldName,
-                                   @QueryParam("wholeword") boolean wholeWord) throws JSONException {
-        logger.info("searchTerm=" + searchTerm + ", fieldName=" + fieldName + ", wholeWord=" + wholeWord);
-        return Activator.getService().searchTopics(searchTerm, fieldName, wholeWord).toJSON();
+                                   @QueryParam("wholeword") boolean wholeWord,
+                                   @HeaderParam("Cookie") String cookie) throws JSONException {
+        Map clientContext = cookieToMap(cookie);
+        logger.info("searchTerm=" + searchTerm + ", fieldName=" + fieldName + ", wholeWord=" + wholeWord +
+            ", cookie=" + clientContext);
+        return Activator.getService().searchTopics(searchTerm, fieldName, wholeWord, clientContext).toJSON();
     }
 
     @POST
