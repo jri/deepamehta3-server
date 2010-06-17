@@ -39,7 +39,7 @@ public class PluginResource {
         for (String pluginId : Activator.getService().getPluginIds()) {
             JSONObject plugin = new JSONObject();
             plugin.put("plugin_id", pluginId);
-            plugin.put("plugin_file", Activator.getService().getPlugin(pluginId).getClientPlugin());
+            plugin.put("plugin_file", Activator.getService().getPlugin(pluginId).getProperty("clientSidePlugin"));
             plugins.put(plugin);
         }
         return plugins;

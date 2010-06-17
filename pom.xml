@@ -62,7 +62,7 @@
                 <configuration>
                     <instructions>
                         <Export-Package>
-                            de.deepamehta.server
+                            de.deepamehta.server.resources
                         </Export-Package>
                         <Private-Package>
                             de.deepamehta.server.*

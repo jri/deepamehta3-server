@@ -91,10 +91,6 @@ public class Activator implements BundleActivator {
 
 
 
-    /* private ServiceTracker createDeepamehtaServiceTracker(BundleContext context) {
-        return new ServiceTracker(context, DeepaMehtaService.class.getName(), null);
-    } */
-
     private ServiceTracker createDeepamehtaServiceTracker(BundleContext context) {
         return new ServiceTracker(context, DeepaMehtaService.class.getName(), null) {
 
@@ -143,21 +139,19 @@ public class Activator implements BundleActivator {
 
     private void registerServlet() {
         try {
-            Dictionary initParams = new Hashtable();
-            // initParams.put("com.sun.jersey.config.property.packages", "de.deepamehta.server.resources");
-            initParams.put("javax.ws.rs.Application", "de.deepamehta.server.RestService");
-        	//
             logger.info("Registering REST resources");
+            //
+            Dictionary initParams = new Hashtable();
+            initParams.put("com.sun.jersey.config.property.packages", "de.deepamehta.server.resources");
+        	//
             httpService.registerServlet("/rest", new ServletContainer(), initParams, null);
-        } catch (Throwable ie) {
-            throw new RuntimeException(ie);
+        } catch (Exception e) {
+            throw new RuntimeException("REST resources can't be registered", e);
         }
     }
 
     private void unregisterServlet() {
-        if (httpService != null) {
-            logger.info("Unregistering REST resources");
-            httpService.unregister("/rest");
-        }
+        logger.info("Unregistering REST resources");
+        httpService.unregister("/rest");
     }
 }
