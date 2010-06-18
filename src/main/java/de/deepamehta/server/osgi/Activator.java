@@ -39,6 +39,8 @@ public class Activator implements BundleActivator {
     private ServiceTracker httpServiceTracker;
     private HttpService httpService;
 
+    private static final String CORE_SERVICE_URI = "/core";
+
     private Logger logger = Logger.getLogger(getClass().getName());
 
 
@@ -144,7 +146,7 @@ public class Activator implements BundleActivator {
             Dictionary initParams = new Hashtable();
             initParams.put("com.sun.jersey.config.property.packages", "de.deepamehta.server.resources");
         	//
-            httpService.registerServlet("/rest", new ServletContainer(), initParams, null);
+            httpService.registerServlet(CORE_SERVICE_URI, new ServletContainer(), initParams, null);
         } catch (Exception e) {
             throw new RuntimeException("REST resources can't be registered", e);
         }
@@ -152,6 +154,6 @@ public class Activator implements BundleActivator {
 
     private void unregisterServlet() {
         logger.info("Unregistering REST resources");
-        httpService.unregister("/rest");
+        httpService.unregister(CORE_SERVICE_URI);
     }
 }

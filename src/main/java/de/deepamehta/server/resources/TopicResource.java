@@ -1,5 +1,6 @@
 package de.deepamehta.server.resources;
 
+import de.deepamehta.core.model.RelatedTopic;
 import de.deepamehta.core.model.Topic;
 import de.deepamehta.core.util.JSONHelper;
 import de.deepamehta.server.osgi.Activator;
@@ -47,18 +48,22 @@ public class TopicResource {
     @Path("/{id}/related_topics")
     public JSONArray getRelatedTopics(@PathParam("id") long id,
                                       @QueryParam("include_topic_types") List includeTopicTypes,
-                                      @QueryParam("exclude_rel_types") List excludeRelTypes) throws JSONException {
+                                      @QueryParam("include_rel_types")   List includeRelTypes,
+                                      @QueryParam("exclude_rel_types")   List excludeRelTypes) throws JSONException {
         logger.info("id=" + id +
             ", includeTopicTypes=" + includeTopicTypes + " (" + includeTopicTypes.size() + " include items)" +
-            ", excludeRelTypes=" + excludeRelTypes + " (" + excludeRelTypes.size() + " exclude items)");
-        return listToJson(Activator.getService().getRelatedTopics(id, includeTopicTypes, excludeRelTypes));
+            ", includeRelTypes="   + includeRelTypes   + " (" + includeRelTypes.size()   + " include items)" +
+            ", excludeRelTypes="   + excludeRelTypes   + " (" + excludeRelTypes.size()   + " exclude items)");
+        return relatedTopicsToJson(Activator.getService().getRelatedTopics(id, includeTopicTypes,
+                                                                               includeRelTypes,
+                                                                               excludeRelTypes));
     }
 
     @GET
     @Path("/by_type/{typeId}")
     public JSONArray getTopics(@PathParam("typeId") String typeId) throws JSONException {
         logger.info("typeId=" + typeId);
-        return listToJson(Activator.getService().getTopics(typeId));
+        return topicsToJson(Activator.getService().getTopics(typeId));
     }
 
     @GET
@@ -102,13 +107,24 @@ public class TopicResource {
 
 
 
-    private JSONArray listToJson(List<Topic> topics) throws JSONException {
+    private JSONArray topicsToJson(List<Topic> topics) throws JSONException {
         JSONArray array = new JSONArray();
         for (Topic topic : topics) {
             array.put(topic.toJSON());
         }
         return array;
     }
+
+    // FIXME: for the moment it is sufficient to serialize the topics only. The respective relations are omitted.
+    private JSONArray relatedTopicsToJson(List<RelatedTopic> relTopics) throws JSONException {
+        JSONArray array = new JSONArray();
+        for (RelatedTopic relTopic : relTopics) {
+            array.put(relTopic.getTopic().toJSON());
+        }
+        return array;
+    }
+
+    // ---
 
     /**
       * Converts a "Cookie" header value (String) to a map (key=String, value=String).
