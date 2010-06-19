@@ -55,11 +55,13 @@ public class RelationResource {
         long dstTopicId = relation.getLong("dst_topic_id");
         Map properties = JSONHelper.toMap(relation.getJSONObject("properties"));
         //
-        Relation rel = Activator.getService().createRelation(typeId, srcTopicId, dstTopicId, properties);
-        //
-        JSONObject response = new JSONObject();
-        response.put("relation_id", rel.id);
-        return response;
+        return Activator.getService().createRelation(typeId, srcTopicId, dstTopicId, properties).toJSON();
+    }
+
+    @PUT
+    @Path("/{id}")
+    public void setTopicProperties(@PathParam("id") long id, JSONObject properties) throws JSONException {
+        Activator.getService().setRelationProperties(id, JSONHelper.toMap(properties));
     }
 
     @DELETE
