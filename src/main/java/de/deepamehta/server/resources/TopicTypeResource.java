@@ -1,5 +1,6 @@
 package de.deepamehta.server.resources;
 
+import de.deepamehta.core.model.DataField;
 import de.deepamehta.core.model.Topic;
 import de.deepamehta.core.util.JSONHelper;
 import de.deepamehta.server.osgi.Activator;
@@ -50,5 +51,17 @@ public class TopicTypeResource {
     @Path("/{id}")
     public JSONObject getTopicType(@PathParam("id") String id) throws JSONException {
         return Activator.getService().getTopicType(id).toJSON();
+    }
+
+    @POST
+    @Path("/{id}")
+    public void addDataField(@PathParam("id") String id, JSONObject dataField) throws JSONException {
+        Activator.getService().addDataField(id, new DataField(dataField));
+    }
+
+    @PUT
+    @Path("/{id}")
+    public void updateDataField(@PathParam("id") String id, JSONObject dataField) throws JSONException {
+        Activator.getService().updateDataField(id, new DataField(dataField));
     }
 }
