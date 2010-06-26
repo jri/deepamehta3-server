@@ -64,4 +64,10 @@ public class TopicTypeResource {
     public void updateDataField(@PathParam("id") String id, JSONObject dataField) throws JSONException {
         Activator.getService().updateDataField(id, new DataField(dataField));
     }
+
+    @DELETE
+    @Path("/{id}/field/{fieldId}")
+    public void removeDataField(@PathParam("id") String id, @PathParam("fieldId") String fieldId) throws JSONException {
+        Activator.getService().removeDataField(id, fieldId);
+    }
 }
