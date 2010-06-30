@@ -39,35 +39,35 @@ public class TopicTypeResource {
     private Logger logger = Logger.getLogger(getClass().getName());
 
     @GET
-    public JSONArray getTopicTypeIds() throws JSONException {
-        JSONArray typeIds = new JSONArray();
-        for (String tpyeId : Activator.getService().getTopicTypeIds()) {
-            typeIds.put(tpyeId);
+    public JSONArray getTopicTypeUris() throws JSONException {
+        JSONArray typeUris = new JSONArray();
+        for (String typeUri : Activator.getService().getTopicTypeUris()) {
+            typeUris.put(typeUri);
         }
-        return typeIds;
+        return typeUris;
     }
 
     @GET
     @Path("/{id}")
-    public JSONObject getTopicType(@PathParam("id") String id) throws JSONException {
+    public JSONObject getTopicType(@PathParam("id") String id) throws Exception {
         return Activator.getService().getTopicType(id).toJSON();
     }
 
     @POST
     @Path("/{id}")
-    public void addDataField(@PathParam("id") String id, JSONObject dataField) throws JSONException {
+    public void addDataField(@PathParam("id") String id, JSONObject dataField) throws Exception {
         Activator.getService().addDataField(id, new DataField(dataField));
     }
 
     @PUT
     @Path("/{id}")
-    public void updateDataField(@PathParam("id") String id, JSONObject dataField) throws JSONException {
+    public void updateDataField(@PathParam("id") String id, JSONObject dataField) throws Exception {
         Activator.getService().updateDataField(id, new DataField(dataField));
     }
 
     @DELETE
-    @Path("/{id}/field/{fieldId}")
-    public void removeDataField(@PathParam("id") String id, @PathParam("fieldId") String fieldId) throws JSONException {
-        Activator.getService().removeDataField(id, fieldId);
+    @Path("/{id}/field/{fieldUri}")
+    public void removeDataField(@PathParam("id") String id, @PathParam("fieldUri") String fieldUri) throws Exception {
+        Activator.getService().removeDataField(id, fieldUri);
     }
 }

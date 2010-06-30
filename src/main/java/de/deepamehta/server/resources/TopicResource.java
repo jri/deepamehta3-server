@@ -60,10 +60,10 @@ public class TopicResource {
     }
 
     @GET
-    @Path("/by_type/{typeId}")
-    public JSONArray getTopics(@PathParam("typeId") String typeId) throws JSONException {
-        logger.info("typeId=" + typeId);
-        return topicsToJson(Activator.getService().getTopics(typeId));
+    @Path("/by_type/{typeUri}")
+    public JSONArray getTopics(@PathParam("typeUri") String typeUri) throws JSONException {
+        logger.info("typeUri=" + typeUri);
+        return topicsToJson(Activator.getService().getTopics(typeUri));
     }
 
     @GET
@@ -79,12 +79,12 @@ public class TopicResource {
 
     @POST
     public JSONObject createTopic(JSONObject topic, @HeaderParam("Cookie") String cookie) throws JSONException {
-        String typeId = topic.getString("type_id");
+        String typeUri = topic.getString("type_uri");
         Map properties = JSONHelper.toMap(topic.getJSONObject("properties"));
         Map clientContext = cookieToMap(cookie);
         logger.info("### cookie: " + clientContext);
         //
-        return Activator.getService().createTopic(typeId, properties, clientContext).toJSON();
+        return Activator.getService().createTopic(typeUri, properties, clientContext).toJSON();
     }
 
     @PUT
