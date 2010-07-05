@@ -49,9 +49,9 @@ public class TopicTypeResource {
     }
 
     @GET
-    @Path("/{id}")
-    public JSONObject getTopicType(@PathParam("id") String id) throws Exception {
-        return Activator.getService().getTopicType(id).toJSON();
+    @Path("/{typeUri}")
+    public JSONObject getTopicType(@PathParam("typeUri") String typeUri) throws Exception {
+        return Activator.getService().getTopicType(typeUri).toJSON();
     }
 
     @POST
@@ -60,21 +60,23 @@ public class TopicTypeResource {
         return Activator.getService().createTopicType(tt.getProperties(), tt.getDataFields()).toJSON();
     }
 
+    // ---
+
     @POST
-    @Path("/{id}")
-    public void addDataField(@PathParam("id") String id, JSONObject dataField) throws Exception {
-        Activator.getService().addDataField(id, new DataField(dataField));
+    @Path("/{typeUri}")
+    public void addDataField(@PathParam("typeUri") String typeUri, JSONObject dataField) throws Exception {
+        Activator.getService().addDataField(typeUri, new DataField(dataField));
     }
 
     @PUT
-    @Path("/{id}")
-    public void updateDataField(@PathParam("id") String id, JSONObject dataField) throws Exception {
-        Activator.getService().updateDataField(id, new DataField(dataField));
+    @Path("/{typeUri}")
+    public void updateDataField(@PathParam("typeUri") String typeUri, JSONObject dataField) throws Exception {
+        Activator.getService().updateDataField(typeUri, new DataField(dataField));
     }
 
     @DELETE
-    @Path("/{id}/field/{fieldUri}")
-    public void removeDataField(@PathParam("id") String id, @PathParam("fieldUri") String fieldUri) throws Exception {
-        Activator.getService().removeDataField(id, fieldUri);
+    @Path("/{typeUri}/field/{fieldUri}")
+    public void removeDataField(@PathParam("typeUri") String typeUri, @PathParam("fieldUri") String fieldUri) throws Exception {
+        Activator.getService().removeDataField(typeUri, fieldUri);
     }
 }
