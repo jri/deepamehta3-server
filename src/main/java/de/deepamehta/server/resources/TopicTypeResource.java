@@ -74,9 +74,16 @@ public class TopicTypeResource {
         Activator.getService().updateDataField(typeUri, new DataField(dataField));
     }
 
+    @PUT
+    @Path("/{typeUri}/field_order")
+    public void setDataFieldOrder(@PathParam("typeUri") String typeUri, JSONArray fieldUris) throws Exception {
+        Activator.getService().setDataFieldOrder(typeUri, JSONHelper.toList(fieldUris));
+    }
+
     @DELETE
     @Path("/{typeUri}/field/{fieldUri}")
-    public void removeDataField(@PathParam("typeUri") String typeUri, @PathParam("fieldUri") String fieldUri) throws Exception {
+    public void removeDataField(@PathParam("typeUri") String typeUri,
+                                @PathParam("fieldUri") String fieldUri) throws Exception {
         Activator.getService().removeDataField(typeUri, fieldUri);
     }
 }
