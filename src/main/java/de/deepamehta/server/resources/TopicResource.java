@@ -54,16 +54,16 @@ public class TopicResource {
             ", includeTopicTypes=" + includeTopicTypes + " (" + includeTopicTypes.size() + " include items)" +
             ", includeRelTypes="   + includeRelTypes   + " (" + includeRelTypes.size()   + " include items)" +
             ", excludeRelTypes="   + excludeRelTypes   + " (" + excludeRelTypes.size()   + " exclude items)");
-        return relatedTopicsToJson(Activator.getService().getRelatedTopics(id, includeTopicTypes,
-                                                                               includeRelTypes,
-                                                                               excludeRelTypes));
+        return JSONHelper.relatedTopicsToJson(Activator.getService().getRelatedTopics(id, includeTopicTypes,
+                                                                                          includeRelTypes,
+                                                                                          excludeRelTypes));
     }
 
     @GET
     @Path("/by_type/{typeUri}")
     public JSONArray getTopics(@PathParam("typeUri") String typeUri) throws JSONException {
         logger.info("typeUri=" + typeUri);
-        return topicsToJson(Activator.getService().getTopics(typeUri));
+        return JSONHelper.topicsToJson(Activator.getService().getTopics(typeUri));
     }
 
     @GET
@@ -71,7 +71,7 @@ public class TopicResource {
                                    @QueryParam("field")  String fieldName,
                                    @QueryParam("wholeword") boolean wholeWord,
                                    @HeaderParam("Cookie") String cookie) throws JSONException {
-        Map clientContext = cookieToMap(cookie);
+        Map clientContext = JSONHelper.cookieToMap(cookie);
         logger.info("searchTerm=" + searchTerm + ", fieldName=" + fieldName + ", wholeWord=" + wholeWord +
             ", cookie=" + clientContext);
         return Activator.getService().searchTopics(searchTerm, fieldName, wholeWord, clientContext).toJSON();
@@ -81,7 +81,7 @@ public class TopicResource {
     public JSONObject createTopic(JSONObject topic, @HeaderParam("Cookie") String cookie) throws JSONException {
         String typeUri = topic.getString("type_uri");
         Map properties = JSONHelper.toMap(topic.getJSONObject("properties"));
-        Map clientContext = cookieToMap(cookie);
+        Map clientContext = JSONHelper.cookieToMap(cookie);
         logger.info("### cookie: " + clientContext);
         //
         return Activator.getService().createTopic(typeUri, properties, clientContext).toJSON();
@@ -97,47 +97,5 @@ public class TopicResource {
     @Path("/{id}")
     public void deleteTopic(@PathParam("id") long id) throws JSONException {
         Activator.getService().deleteTopic(id);
-    }
-
-
-
-    // ***********************
-    // *** Private Helpers ***
-    // ***********************
-
-
-
-    private JSONArray topicsToJson(List<Topic> topics) throws JSONException {
-        JSONArray array = new JSONArray();
-        for (Topic topic : topics) {
-            array.put(topic.toJSON());
-        }
-        return array;
-    }
-
-    // FIXME: for the moment it is sufficient to serialize the topics only. The respective relations are omitted.
-    private JSONArray relatedTopicsToJson(List<RelatedTopic> relTopics) throws JSONException {
-        JSONArray array = new JSONArray();
-        for (RelatedTopic relTopic : relTopics) {
-            array.put(relTopic.getTopic().toJSON());
-        }
-        return array;
-    }
-
-    // ---
-
-    /**
-      * Converts a "Cookie" header value (String) to a map (key=String, value=String).
-      * E.g. "user=jri; workspace_id=123" => {"user"="jri", "workspace_id"="123"}
-      */
-    private Map<String, String> cookieToMap(String cookie) {
-        Map cookieValues = new HashMap();
-        if (cookie != null) {
-            for (String value : cookie.split("; ")) {
-                String[] val = value.split("=");
-                cookieValues.put(val[0], val[1]);
-            }
-        }
-        return cookieValues;
     }
 }
