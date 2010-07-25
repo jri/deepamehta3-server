@@ -27,6 +27,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import java.io.File;
 import java.io.InputStream;
@@ -40,23 +41,24 @@ import java.util.logging.Logger;
 
 
 @Path("/command")
-@Consumes("application/json")
-@Produces("application/json")
 public class CommandResource {
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
     @POST
     @Consumes("multipart/form-data")
-    public JSONObject executeCommand(FormDataMultiPart multiPart, @HeaderParam("Cookie") String cookie)
-                                                                                            throws Exception {
+    @Produces("text/plain")
+    // Note: Although this request returns a JSON response we use text/plain as media type because (in contrast
+    // to Safari) Firefox can't "display" an application/json response (e.g. in a hidden iframe) but always want
+    // to save it to disc, even if a "Content-Disposition: inline" response header is set.
+    public String executeCommand(FormDataMultiPart multiPart, @HeaderParam("Cookie") String cookie) throws Exception {
         String command = multiPart.getField("command").getValue();
         Map params = multiPartToMap(multiPart);
         //
         Map clientContext = JSONHelper.cookieToMap(cookie);
         logger.info("### cookie: " + clientContext);
         //
-        return Activator.getService().executeCommand(command, params, clientContext);
+        return Activator.getService().executeCommand(command, params, clientContext).toString();
     }
 
 
