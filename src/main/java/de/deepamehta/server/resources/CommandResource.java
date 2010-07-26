@@ -30,7 +30,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import java.io.File;
-import java.io.InputStream;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,7 +49,7 @@ public class CommandResource {
     @Produces("text/plain")
     // Note: Although this request returns a JSON response we use text/plain as media type because (in contrast
     // to Safari) Firefox can't "display" an application/json response (e.g. in a hidden iframe) but always want
-    // to save it to disc, even if a "Content-Disposition: inline" response header is set.
+    // to save it to disc, even if a "Content-Disposition: inline" response header is present.
     public String executeCommand(FormDataMultiPart multiPart, @HeaderParam("Cookie") String cookie) throws Exception {
         String command = multiPart.getField("command").getValue();
         Map params = multiPartToMap(multiPart);
@@ -76,19 +75,20 @@ public class CommandResource {
         for (String name : fields.keySet()) {
             FormDataBodyPart part = fields.get(name).get(0);
             //
-            if (part.isSimple()) {
+            // if (part.isSimple()) {   // returns true for text/plain files
+            String fileName = part.getContentDisposition().getFileName();
+            if (fileName == null) {
                 String value = part.getValue();
                 logger.info("### \"" + name + "\" => \"" + value + "\"");
                 if (!name.equals("command")) {
                     params.put(name, value);
                 }
             } else {
-                InputStream in = part.getValueAs(InputStream.class);
-                String fileName = part.getContentDisposition().getFileName();
+                File file = part.getValueAs(File.class);
                 String mimeType = part.getMediaType().toString();
-                UploadedFile file = new UploadedFile(in, fileName, mimeType);
-                logger.info("### \"" + name + "\" => " + file);
-                params.put(name, file);
+                UploadedFile uploadedFile = new UploadedFile(file, fileName, mimeType);
+                logger.info("### \"" + name + "\" => " + uploadedFile);
+                params.put(name, uploadedFile);
             }
         }
         return params;
