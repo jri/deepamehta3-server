@@ -36,7 +36,9 @@
                         <Private-Package>
                             de.deepamehta.server.*
                         </Private-Package>
-                        <Bundle-Activator>de.deepamehta.server.osgi.Activator</Bundle-Activator>
+                        <Bundle-Activator>
+                            de.deepamehta.server.osgi.Activator
+                        </Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>

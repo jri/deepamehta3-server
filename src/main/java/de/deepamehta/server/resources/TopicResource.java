@@ -60,21 +60,22 @@ public class TopicResource {
     }
 
     @GET
+    public JSONArray searchTopics(@QueryParam("search") String searchTerm,
+                                  @QueryParam("field")  String fieldUri,
+                                  @QueryParam("wholeword") boolean wholeWord,
+                                  @HeaderParam("Cookie") String cookie) throws JSONException {
+        Map clientContext = JSONHelper.cookieToMap(cookie);
+        logger.info("searchTerm=" + searchTerm + ", fieldUri=" + fieldUri + ", wholeWord=" + wholeWord +
+            ", cookie=" + clientContext);
+        List searchResult = Activator.getService().searchTopics(searchTerm, fieldUri, wholeWord, clientContext);
+        return JSONHelper.topicsToJson(searchResult);
+    }
+
+    @GET
     @Path("/by_type/{typeUri}")
     public JSONArray getTopics(@PathParam("typeUri") String typeUri) throws JSONException {
         logger.info("typeUri=" + typeUri);
         return JSONHelper.topicsToJson(Activator.getService().getTopics(typeUri));
-    }
-
-    @GET
-    public JSONObject searchTopics(@QueryParam("search") String searchTerm,
-                                   @QueryParam("field")  String fieldName,
-                                   @QueryParam("wholeword") boolean wholeWord,
-                                   @HeaderParam("Cookie") String cookie) throws JSONException {
-        Map clientContext = JSONHelper.cookieToMap(cookie);
-        logger.info("searchTerm=" + searchTerm + ", fieldName=" + fieldName + ", wholeWord=" + wholeWord +
-            ", cookie=" + clientContext);
-        return Activator.getService().searchTopics(searchTerm, fieldName, wholeWord, clientContext).toJSON();
     }
 
     @POST
