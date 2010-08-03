@@ -37,9 +37,10 @@ public class PluginResource {
     public JSONArray listPlugins() throws JSONException {
         JSONArray plugins = new JSONArray();
         for (String pluginId : Activator.getService().getPluginIds()) {
+            String pluginFile = Activator.getService().getPlugin(pluginId).getConfigProperty("clientSidePluginFile");
             JSONObject plugin = new JSONObject();
             plugin.put("plugin_id", pluginId);
-            plugin.put("plugin_file", Activator.getService().getPlugin(pluginId).getConfigProperty("clientSidePlugin"));
+            plugin.put("plugin_file", pluginFile);
             plugins.put(plugin);
         }
         return plugins;
