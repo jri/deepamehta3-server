@@ -50,10 +50,9 @@ public class TopicResource {
                                       @QueryParam("include_topic_types") List includeTopicTypes,
                                       @QueryParam("include_rel_types")   List includeRelTypes,
                                       @QueryParam("exclude_rel_types")   List excludeRelTypes) throws JSONException {
-        logger.info("id=" + id +
-            ", includeTopicTypes=" + includeTopicTypes + " (" + includeTopicTypes.size() + " include items)" +
-            ", includeRelTypes="   + includeRelTypes   + " (" + includeRelTypes.size()   + " include items)" +
-            ", excludeRelTypes="   + excludeRelTypes   + " (" + excludeRelTypes.size()   + " exclude items)");
+        logger.info("Topic " + id + ", include topic types="    + includeTopicTypes + 
+                                    ", include relation types=" + includeRelTypes   + 
+                                    ", exclude relation types=" + excludeRelTypes);
         return JSONHelper.relatedTopicsToJson(Activator.getService().getRelatedTopics(id, includeTopicTypes,
                                                                                           includeRelTypes,
                                                                                           excludeRelTypes));
