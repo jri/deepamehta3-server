@@ -45,12 +45,25 @@ public class CommandResource {
     private Logger logger = Logger.getLogger(getClass().getName());
 
     @POST
+    @Path("/{command}")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public JSONObject executeCommand(@PathParam("command") String command, JSONObject params,
+                                     @HeaderParam("Cookie") String cookie) throws Exception {
+        Map clientContext = JSONHelper.cookieToMap(cookie);
+        logger.info("### cookie: " + clientContext);
+        //
+        return Activator.getService().executeCommand(command, JSONHelper.toMap(params), clientContext);
+    }
+
+    @POST
     @Consumes("multipart/form-data")
     @Produces("text/plain")
     // Note: Although this request returns a JSON response we use text/plain as media type because (in contrast
     // to Safari) Firefox can't "display" an application/json response (e.g. in a hidden iframe) but always want
     // to save it to disc, even if a "Content-Disposition: inline" response header is present.
     public String executeCommand(FormDataMultiPart multiPart, @HeaderParam("Cookie") String cookie) throws Exception {
+        // FIXME: command should be a path parameter
         String command = multiPart.getField("command").getValue();
         Map params = multiPartToMap(multiPart);
         //
