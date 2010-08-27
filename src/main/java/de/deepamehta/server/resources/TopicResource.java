@@ -22,6 +22,7 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.Response;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,9 +73,22 @@ public class TopicResource {
 
     @GET
     @Path("/by_type/{typeUri}")
-    public JSONArray getTopics(@PathParam("typeUri") String typeUri) throws JSONException {
+    public JSONArray getTopicsByType(@PathParam("typeUri") String typeUri) throws JSONException {
         logger.info("typeUri=" + typeUri);
         return JSONHelper.topicsToJson(Activator.getService().getTopics(typeUri));
+    }
+
+    @GET
+    @Path("/by_property/{key}/{value}")
+    public Response getTopicsByProperty(@PathParam("key") String key,
+                                        @PathParam("value") String value) throws JSONException {
+        logger.info("key=" + key + ", value=" + value);
+        Topic topic = Activator.getService().getTopic(key, value);
+        if (topic != null) {
+            return Response.ok(topic.toJSON()).build();
+        } else {
+            return Response.noContent().build();
+        }
     }
 
     @POST
