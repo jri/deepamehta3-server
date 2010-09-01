@@ -80,8 +80,8 @@ public class TopicResource {
 
     @GET
     @Path("/by_property/{key}/{value}")
-    public Response getTopicsByProperty(@PathParam("key") String key,
-                                        @PathParam("value") String value) throws JSONException {
+    public Response getTopicByProperty(@PathParam("key") String key,
+                                       @PathParam("value") String value) throws JSONException {
         logger.info("key=" + key + ", value=" + value);
         Topic topic = Activator.getService().getTopic(key, value);
         if (topic != null) {

@@ -35,11 +35,13 @@ public class RelationResource {
     private Logger logger = Logger.getLogger(getClass().getName());
 
     @GET
-    public JSONObject getRelation(@QueryParam("src") long srcTopicId, @QueryParam("dst") long dstTopicId)
+    public JSONObject getRelation(@QueryParam("src") long srcTopicId, @QueryParam("dst") long dstTopicId,
+                                  @QueryParam("type") String typeId, @QueryParam("directed") boolean isDirected)
                                                                                         throws JSONException {
-        logger.info("srcTopicId=" + srcTopicId + " dstTopicId=" + dstTopicId);
+        logger.info("srcTopicId=" + srcTopicId + " dstTopicId=" + dstTopicId +
+            " typeId=" + typeId + " isDirected=" + isDirected);
         //
-        Relation rel = Activator.getService().getRelation(srcTopicId, dstTopicId);
+        Relation rel = Activator.getService().getRelation(srcTopicId, dstTopicId, typeId, isDirected);
         //
         if (rel != null) {
             return rel.toJSON();
