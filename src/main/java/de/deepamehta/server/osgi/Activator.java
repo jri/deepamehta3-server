@@ -145,7 +145,7 @@ public class Activator implements BundleActivator {
             //
             Dictionary initParams = new Hashtable();
             initParams.put("com.sun.jersey.config.property.packages", "de.deepamehta.server.resources");
-        	//
+            //
             httpService.registerServlet(CORE_SERVICE_URI, new ServletContainer(), initParams, null);
         } catch (Exception e) {
             throw new RuntimeException("REST resources can't be registered", e);
