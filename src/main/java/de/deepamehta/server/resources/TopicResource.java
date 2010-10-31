@@ -41,8 +41,10 @@ public class TopicResource {
 
     @GET
     @Path("/{id}")
-    public JSONObject getTopic(@PathParam("id") long id) throws JSONException {
-        return Activator.getService().getTopic(id).toJSON();
+    public JSONObject getTopic(@PathParam("id") long id, @HeaderParam("Cookie") String cookie) throws JSONException {
+        Map clientContext = JSONHelper.cookieToMap(cookie);
+        logger.info("### cookie: " + clientContext);
+        return Activator.getService().getTopic(id, clientContext).toJSON();
     }
 
     @GET
