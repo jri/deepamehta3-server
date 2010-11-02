@@ -17,6 +17,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
@@ -50,8 +51,10 @@ public class TopicTypeResource {
 
     @GET
     @Path("/{typeUri}")
-    public JSONObject getTopicType(@PathParam("typeUri") String typeUri) throws Exception {
-        return Activator.getService().getTopicType(typeUri).toJSON();
+    public JSONObject getTopicType(@PathParam("typeUri") String typeUri, @HeaderParam("Cookie") String cookie) throws Exception {
+        Map clientContext = JSONHelper.cookieToMap(cookie);
+        logger.info("### cookie: " + clientContext);
+        return Activator.getService().getTopicType(typeUri, clientContext).toJSON();
     }
 
     @POST
