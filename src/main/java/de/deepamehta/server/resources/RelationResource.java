@@ -36,8 +36,7 @@ public class RelationResource {
 
     @GET
     public JSONObject getRelation(@QueryParam("src") long srcTopicId, @QueryParam("dst") long dstTopicId,
-                                  @QueryParam("type") String typeId, @QueryParam("directed") boolean isDirected)
-                                                                                        throws JSONException {
+                                  @QueryParam("type") String typeId, @QueryParam("directed") boolean isDirected) {
         logger.info("srcTopicId=" + srcTopicId + " dstTopicId=" + dstTopicId +
             " typeId=" + typeId + " isDirected=" + isDirected);
         //
@@ -49,13 +48,24 @@ public class RelationResource {
         return null;
     }
 
-    @POST
-    public JSONObject createRelation(JSONObject relation) throws JSONException{
+    @GET
+    @Path("/multiple")
+    public JSONArray getRelations(@QueryParam("src") long srcTopicId, @QueryParam("dst") long dstTopicId,
+                                  @QueryParam("type") String typeId, @QueryParam("directed") boolean isDirected) {
+        logger.info("srcTopicId=" + srcTopicId + " dstTopicId=" + dstTopicId +
+            " typeId=" + typeId + " isDirected=" + isDirected);
         //
-        String typeId = relation.getString("type_id");
-        long srcTopicId = relation.getLong("src_topic_id");
-        long dstTopicId = relation.getLong("dst_topic_id");
-        Map properties = JSONHelper.toMap(relation.getJSONObject("properties"));
+        List<Relation> relations = Activator.getService().getRelations(srcTopicId, dstTopicId, typeId, isDirected);
+        return JSONHelper.relationsToJson(relations);
+    }
+
+    @POST
+    public JSONObject createRelation(JSONObject relation) throws JSONException {
+        //
+        String typeId = relation.getString("type_id");                              // throws JSONException
+        long srcTopicId = relation.getLong("src_topic_id");                         // throws JSONException
+        long dstTopicId = relation.getLong("dst_topic_id");                         // throws JSONException
+        Map properties = JSONHelper.toMap(relation.getJSONObject("properties"));    // throws JSONException
         //
         return Activator.getService().createRelation(typeId, srcTopicId, dstTopicId, properties).toJSON();
     }

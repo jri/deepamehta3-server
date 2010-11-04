@@ -51,14 +51,14 @@ public class TopicTypeResource {
 
     @GET
     @Path("/{typeUri}")
-    public JSONObject getTopicType(@PathParam("typeUri") String typeUri, @HeaderParam("Cookie") String cookie) throws Exception {
+    public JSONObject getTopicType(@PathParam("typeUri") String typeUri, @HeaderParam("Cookie") String cookie) {
         Map clientContext = JSONHelper.cookieToMap(cookie);
         logger.info("### cookie: " + clientContext);
         return Activator.getService().getTopicType(typeUri, clientContext).toJSON();
     }
 
     @POST
-    public JSONObject createTopicType(JSONObject topicType) throws Exception {
+    public JSONObject createTopicType(JSONObject topicType) {
         TopicType tt = new TopicType(topicType);
         return Activator.getService().createTopicType(tt.getProperties(), tt.getDataFields()).toJSON();
     }
@@ -67,26 +67,25 @@ public class TopicTypeResource {
 
     @POST
     @Path("/{typeUri}")
-    public void addDataField(@PathParam("typeUri") String typeUri, JSONObject dataField) throws Exception {
+    public void addDataField(@PathParam("typeUri") String typeUri, JSONObject dataField) {
         Activator.getService().addDataField(typeUri, new DataField(dataField));
     }
 
     @PUT
     @Path("/{typeUri}")
-    public void updateDataField(@PathParam("typeUri") String typeUri, JSONObject dataField) throws Exception {
+    public void updateDataField(@PathParam("typeUri") String typeUri, JSONObject dataField) {
         Activator.getService().updateDataField(typeUri, new DataField(dataField));
     }
 
     @PUT
     @Path("/{typeUri}/field_order")
-    public void setDataFieldOrder(@PathParam("typeUri") String typeUri, JSONArray fieldUris) throws Exception {
+    public void setDataFieldOrder(@PathParam("typeUri") String typeUri, JSONArray fieldUris) {
         Activator.getService().setDataFieldOrder(typeUri, JSONHelper.toList(fieldUris));
     }
 
     @DELETE
     @Path("/{typeUri}/field/{fieldUri}")
-    public void removeDataField(@PathParam("typeUri") String typeUri,
-                                @PathParam("fieldUri") String fieldUri) throws Exception {
+    public void removeDataField(@PathParam("typeUri") String typeUri, @PathParam("fieldUri") String fieldUri) {
         Activator.getService().removeDataField(typeUri, fieldUri);
     }
 }

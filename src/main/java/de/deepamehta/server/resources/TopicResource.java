@@ -65,7 +65,7 @@ public class TopicResource {
     public JSONArray searchTopics(@QueryParam("search") String searchTerm,
                                   @QueryParam("field")  String fieldUri,
                                   @QueryParam("wholeword") boolean wholeWord,
-                                  @HeaderParam("Cookie") String cookie) throws JSONException {
+                                  @HeaderParam("Cookie") String cookie) {
         Map clientContext = JSONHelper.cookieToMap(cookie);
         logger.info("searchTerm=" + searchTerm + ", fieldUri=" + fieldUri + ", wholeWord=" + wholeWord +
             ", cookie=" + clientContext);
@@ -75,15 +75,14 @@ public class TopicResource {
 
     @GET
     @Path("/by_type/{typeUri}")
-    public JSONArray getTopicsByType(@PathParam("typeUri") String typeUri) throws JSONException {
+    public JSONArray getTopicsByType(@PathParam("typeUri") String typeUri) {
         logger.info("typeUri=" + typeUri);
         return JSONHelper.topicsToJson(Activator.getService().getTopics(typeUri));
     }
 
     @GET
     @Path("/by_property/{key}/{value}")
-    public Response getTopicByProperty(@PathParam("key") String key,
-                                       @PathParam("value") String value) throws JSONException {
+    public Response getTopicByProperty(@PathParam("key") String key, @PathParam("value") String value) {
         logger.info("key=" + key + ", value=" + value);
         Topic topic = Activator.getService().getTopic(key, value);
         if (topic != null) {
@@ -95,8 +94,8 @@ public class TopicResource {
 
     @POST
     public JSONObject createTopic(JSONObject topic, @HeaderParam("Cookie") String cookie) throws JSONException {
-        String typeUri = topic.getString("type_uri");
-        Map properties = JSONHelper.toMap(topic.getJSONObject("properties"));
+        String typeUri = topic.getString("type_uri");                           // throws JSONException
+        Map properties = JSONHelper.toMap(topic.getJSONObject("properties"));   // throws JSONException
         Map clientContext = JSONHelper.cookieToMap(cookie);
         logger.info("### cookie: " + clientContext);
         //
@@ -105,13 +104,13 @@ public class TopicResource {
 
     @PUT
     @Path("/{id}")
-    public void setTopicProperties(@PathParam("id") long id, JSONObject properties) throws JSONException {
+    public void setTopicProperties(@PathParam("id") long id, JSONObject properties) {
         Activator.getService().setTopicProperties(id, JSONHelper.toMap(properties));
     }
 
     @DELETE
     @Path("/{id}")
-    public void deleteTopic(@PathParam("id") long id) throws JSONException {
+    public void deleteTopic(@PathParam("id") long id) {
         Activator.getService().deleteTopic(id);
     }
 }
