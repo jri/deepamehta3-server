@@ -58,9 +58,11 @@ public class TopicTypeResource {
     }
 
     @POST
-    public JSONObject createTopicType(JSONObject topicType) {
+    public JSONObject createTopicType(JSONObject topicType, @HeaderParam("Cookie") String cookie) {
+        Map clientContext = JSONHelper.cookieToMap(cookie);
+        logger.info("### cookie: " + clientContext);
         TopicType tt = new TopicType(topicType);
-        return Activator.getService().createTopicType(tt.getProperties(), tt.getDataFields()).toJSON();
+        return Activator.getService().createTopicType(tt.getProperties(), tt.getDataFields(), clientContext).toJSON();
     }
 
     // ---
