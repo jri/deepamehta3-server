@@ -72,7 +72,7 @@ public class RelationResource {
 
     @PUT
     @Path("/{id}")
-    public void setTopicProperties(@PathParam("id") long id, JSONObject properties) throws JSONException {
+    public void setTopicProperties(@PathParam("id") long id, JSONObject properties) {
         Activator.getService().setRelationProperties(id, JSONHelper.toMap(properties));
     }
 

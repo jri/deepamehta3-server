@@ -49,7 +49,7 @@ public class CommandResource {
     @Consumes("application/json")
     @Produces("application/json")
     public JSONObject executeCommand(@PathParam("command") String command, JSONObject params,
-                                     @HeaderParam("Cookie") String cookie) throws Exception {
+                                     @HeaderParam("Cookie") String cookie) {
         Map clientContext = JSONHelper.cookieToMap(cookie);
         logger.info("### cookie: " + clientContext);
         //
@@ -62,7 +62,7 @@ public class CommandResource {
     // Note: Although this request returns a JSON response we use text/plain as media type because (in contrast
     // to Safari) Firefox can't "display" an application/json response (e.g. in a hidden iframe) but always want
     // to save it to disc, even if a "Content-Disposition: inline" response header is present.
-    public String executeCommand(FormDataMultiPart multiPart, @HeaderParam("Cookie") String cookie) throws Exception {
+    public String executeCommand(FormDataMultiPart multiPart, @HeaderParam("Cookie") String cookie) {
         // FIXME: command should be a path parameter
         String command = multiPart.getField("command").getValue();
         Map params = multiPartToMap(multiPart);
