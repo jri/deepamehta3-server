@@ -3,8 +3,8 @@ package de.deepamehta.server.resources;
 import de.deepamehta.core.model.DataField;
 import de.deepamehta.core.model.Topic;
 import de.deepamehta.core.model.TopicType;
+import de.deepamehta.core.osgi.Activator;
 import de.deepamehta.core.util.JSONHelper;
-import de.deepamehta.server.osgi.Activator;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;

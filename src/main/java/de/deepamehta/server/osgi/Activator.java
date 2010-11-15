@@ -26,17 +26,23 @@ import java.util.logging.Logger;
 
 public class Activator implements BundleActivator {
 
+    // ------------------------------------------------------------------------------------------------------- Constants
+
+    private static final String CORE_SERVICE_URI = "/core";
+
+    // ---------------------------------------------------------------------------------------------- Instance Variables
+
     private String bundleName;
 
     private ServiceTracker deepamehtaServiceTracker;
-    private static CoreService dms;
+    private CoreService dms;
 
     private ServiceTracker httpServiceTracker;
     private HttpService httpService;
 
-    private static final String CORE_SERVICE_URI = "/core";
-
     private Logger logger = Logger.getLogger(getClass().getName());
+
+    // -------------------------------------------------------------------------------------------------- Public Methods
 
 
 
@@ -46,6 +52,7 @@ public class Activator implements BundleActivator {
 
 
 
+    @Override
     public void start(BundleContext context) {
         bundleName = (String) context.getBundle().getHeaders().get("Bundle-Name");
         logger.info("========== Starting bundle \"" + bundleName + "\" ==========");
@@ -57,6 +64,7 @@ public class Activator implements BundleActivator {
         httpServiceTracker.open();
     }
 
+    @Override
     public void stop(BundleContext context) {
         logger.info("========== Stopping bundle \"" + bundleName + "\" ==========");
         //
@@ -66,27 +74,7 @@ public class Activator implements BundleActivator {
 
 
 
-    // **************
-    // *** Public ***
-    // **************
-
-
-
-    public static CoreService getService() {
-        // CoreService dms = (CoreService) deepamehtaServiceTracker.getService();
-        if (dms == null) {
-            throw new RuntimeException("DeepaMehta core service is currently not available");
-        }
-        return dms;
-    }
-
-
-
-    // ***********************
-    // *** Private Helpers ***
-    // ***********************
-
-
+    // ------------------------------------------------------------------------------------------------- Private Methods
 
     private ServiceTracker createDeepamehtaServiceTracker(BundleContext context) {
         return new ServiceTracker(context, CoreService.class.getName(), null) {
@@ -116,7 +104,7 @@ public class Activator implements BundleActivator {
             public Object addingService(ServiceReference serviceRef) {
                 logger.info("Adding HTTP service to bundle \"" + bundleName + "\"");
                 httpService = (HttpService) super.addingService(serviceRef);
-                registerServlet();
+                registerRestResources();
                 return httpService;
             }
 
@@ -124,7 +112,7 @@ public class Activator implements BundleActivator {
             public void removedService(ServiceReference ref, Object service) {
                 if (service == httpService) {
                     logger.info("Removing HTTP service from bundle \"" + bundleName + "\"");
-                    unregisterServlet();
+                    unregisterRestResources();
                     httpService = null;
                 }
                 super.removedService(ref, service);
@@ -134,7 +122,7 @@ public class Activator implements BundleActivator {
 
     // ---
 
-    private void registerServlet() {
+    private void registerRestResources() {
         try {
             logger.info("Registering REST resources");
             //
@@ -147,7 +135,7 @@ public class Activator implements BundleActivator {
         }
     }
 
-    private void unregisterServlet() {
+    private void unregisterRestResources() {
         logger.info("Unregistering REST resources");
         httpService.unregister(CORE_SERVICE_URI);
     }
