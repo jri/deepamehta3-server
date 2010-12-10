@@ -92,6 +92,19 @@ public class TopicResource {
         }
     }
 
+    @GET
+    @Path("/{typeUri}/{key}/{value}")
+    public Response getTopic(@PathParam("typeUri") String typeUri,
+                             @PathParam("key") String key, @PathParam("value") String value) {
+        logger.info("typeUri=" + typeUri + ", key=" + key + ", value=" + value);
+        Topic topic = Activator.getService().getTopic(typeUri, key, value);
+        if (topic != null) {
+            return Response.ok(topic.toJSON()).build();
+        } else {
+            return Response.noContent().build();
+        }
+    }
+
     @POST
     public JSONObject createTopic(JSONObject topic, @HeaderParam("Cookie") String cookie) throws JSONException {
         String typeUri = topic.getString("type_uri");                           // throws JSONException
