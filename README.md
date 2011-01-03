@@ -24,6 +24,10 @@ The [REST API](http://github.com/jri/deepamehta3/wiki/REST-API) is documented in
 Version History
 ---------------
 
+**v0.4.3** -- Jan 3, 2011
+
+* Compatible with DeepaMehta 3 v0.4.4
+
 **v0.4.2** -- Nov 25, 2010
 
 * Compatible with DeepaMehta 3 v0.4.3
@@ -39,4 +43,4 @@ Version History
 
 ------------
 Jörg Richter  
-Nov 25, 2010
+Jan 3, 2011

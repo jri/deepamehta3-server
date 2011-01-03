@@ -51,7 +51,7 @@ public class CommandResource {
     public JSONObject executeCommand(@PathParam("command") String command, JSONObject params,
                                      @HeaderParam("Cookie") String cookie) {
         Map clientContext = JSONHelper.cookieToMap(cookie);
-        logger.info("### cookie: " + clientContext);
+        logger.info("Cookie: " + clientContext);
         //
         return Activator.getService().executeCommand(command, JSONHelper.toMap(params), clientContext);
     }
@@ -68,7 +68,7 @@ public class CommandResource {
         Map params = multiPartToMap(multiPart);
         //
         Map clientContext = JSONHelper.cookieToMap(cookie);
-        logger.info("### cookie: " + clientContext);
+        logger.info("Cookie: " + clientContext);
         //
         return Activator.getService().executeCommand(command, params, clientContext).toString();
     }

@@ -43,7 +43,7 @@ public class TopicResource {
     @Path("/{id}")
     public JSONObject getTopic(@PathParam("id") long id, @HeaderParam("Cookie") String cookie) {
         Map clientContext = JSONHelper.cookieToMap(cookie);
-        logger.info("### cookie: " + clientContext);
+        logger.info("Cookie: " + clientContext);
         return Activator.getService().getTopic(id, clientContext).toJSON();
     }
 
@@ -110,7 +110,7 @@ public class TopicResource {
         String typeUri = topic.getString("type_uri");                           // throws JSONException
         Map properties = JSONHelper.toMap(topic.getJSONObject("properties"));   // throws JSONException
         Map clientContext = JSONHelper.cookieToMap(cookie);
-        logger.info("### cookie: " + clientContext);
+        logger.info("Cookie: " + clientContext);
         //
         return Activator.getService().createTopic(typeUri, properties, clientContext).toJSON();
     }
